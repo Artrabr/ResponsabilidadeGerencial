@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS municipality (
     UNIQUE KEY uq_municipality_ibge_code (municipality_ibge_code)
 );
 
-CREATE TABLE IF NOT EXISTS `user` (
+CREATE TABLE IF NOT EXISTS user (
     user_id INT NOT NULL AUTO_INCREMENT,
     user_name VARCHAR(150) NOT NULL,
     user_login VARCHAR(100) NOT NULL,
