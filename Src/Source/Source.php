@@ -1,9 +1,9 @@
 <?php
 
-class Font {
+class Source {
     private int $id;
     private string $title;
-    private string $source;
+    private string $organization;
     private string $url;
     private string $accessDate;
     private string $publishedDate;
@@ -11,14 +11,14 @@ class Font {
     public function __construct(
         int $id,
         string $title,
-        string $source,
+        string $organization,
         string $url,
         string $accessDate,
         string $publishedDate
     ) {
         $this->id = $id;
         $this->title = $title;
-        $this->source = $source;
+        $this->organization = $organization;
         $this->url = $url;
         $this->accessDate = $accessDate;
         $this->publishedDate = $publishedDate;
@@ -32,8 +32,8 @@ class Font {
         return $this->title;
     }
 
-    public function getSource(): string {
-        return $this->source;
+    public function getOrganization(): string {
+        return $this->organization;
     }
 
     public function getUrl(): string {

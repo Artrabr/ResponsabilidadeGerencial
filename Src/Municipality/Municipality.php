@@ -4,13 +4,13 @@ class Municipality {
     private int $id;
     private string $name;
     private int $ibgeCode;
-    private array $districts;
+    private array $neighborhoods;
 
-    public function __construct(int $id, string $name, int $ibgeCode, array $districts) {
+    public function __construct(int $id, string $name, int $ibgeCode, array $neighborhoods) {
         $this->id = $id;
         $this->name = $name;
         $this->ibgeCode = $ibgeCode;
-        $this->districts = $districts;
+        $this->neighborhoods = $neighborhoods;
     }
 
     public function getId(): int {
@@ -25,7 +25,7 @@ class Municipality {
         return $this->ibgeCode;
     }
 
-    public function getDistricts(): array {
-        return $this->districts;
+    public function getNeighborhoods(): array {
+        return $this->neighborhoods;
     }
 }

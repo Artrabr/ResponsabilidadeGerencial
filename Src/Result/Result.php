@@ -3,27 +3,24 @@
 class Result {
     private int $id;
     private int $indicatorId;
-    private int $fontId;
-    private string $name;
+    private int $sourceId;
     private float $value;
-    private string $sourceDate;
+    private string $referenceDate;
     private string $note;
 
     public function __construct(
         int $id,
         int $indicatorId,
-        int $fontId,
-        string $name,
+        int $sourceId,
         float $value,
-        string $sourceDate,
+        string $referenceDate,
         string $note
     ) {
         $this->id = $id;
         $this->indicatorId = $indicatorId;
-        $this->fontId = $fontId;
-        $this->name = $name;
+        $this->sourceId = $sourceId;
         $this->value = $value;
-        $this->sourceDate = $sourceDate;
+        $this->referenceDate = $referenceDate;
         $this->note = $note;
     }
 
@@ -35,20 +32,16 @@ class Result {
         return $this->indicatorId;
     }
 
-    public function getFontId(): int {
-        return $this->fontId;
-    }
-
-    public function getName(): string {
-        return $this->name;
+    public function getSourceId(): int {
+        return $this->sourceId;
     }
 
     public function getValue(): float {
         return $this->value;
     }
 
-    public function getSourceDate(): string {
-        return $this->sourceDate;
+    public function getReferenceDate(): string {
+        return $this->referenceDate;
     }
 
     public function getNote(): string {
