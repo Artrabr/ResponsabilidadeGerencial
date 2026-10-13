@@ -1,17 +1,25 @@
 <?php
 
 class Area {
-    public int id;
-    public string name;
-    public string description;
+    private int $id;
+    private string $name;
+    private string $description;
 
-    public function _construct(int $id, string $name, string $description){
-        this->id = $id;
-        
+    public function __construct(int $id, string $name, string $description) {
+        $this->id = $id;
+        $this->name = $name;
+        $this->description = $description;
     }
 
-    public function getId(){
-
+    public function getId(): int {
+        return $this->id;
     }
 
+    public function getName(): string {
+        return $this->name;
+    }
+
+    public function getDescription(): string {
+        return $this->description;
+    }
 }
