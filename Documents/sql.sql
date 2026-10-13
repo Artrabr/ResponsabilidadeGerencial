@@ -42,6 +42,17 @@ CREATE TABLE IF NOT EXISTS municipality (
     UNIQUE KEY uq_municipality_ibge_code (municipality_ibge_code)
 );
 
+CREATE TABLE IF NOT EXISTS `user` (
+    user_id INT NOT NULL AUTO_INCREMENT,
+    user_name VARCHAR(150) NOT NULL,
+    user_login VARCHAR(100) NOT NULL,
+    user_email VARCHAR(254) NOT NULL,
+    user_password_hash VARCHAR(255) NOT NULL,
+    PRIMARY KEY (user_id),
+    UNIQUE KEY uq_user_login (user_login),
+    UNIQUE KEY uq_user_email (user_email)
+);
+
 CREATE TABLE IF NOT EXISTS neighborhood (
     neighborhood_id INT NOT NULL AUTO_INCREMENT,
     municipality_id INT NOT NULL,
@@ -60,7 +71,7 @@ CREATE TABLE IF NOT EXISTS result (
     municipality_id INT NOT NULL,
     result_value DECIMAL(15,4) NOT NULL,
     result_reference_date DATE NOT NULL,
-    result_note TEXT NOT NULL,
+    result_note TEXT NULL,
     PRIMARY KEY (result_id),
     INDEX idx_result_indicator_id (indicator_id),
     INDEX idx_result_source_id (source_id),

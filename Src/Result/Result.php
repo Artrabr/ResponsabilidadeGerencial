@@ -4,21 +4,24 @@ class Result {
     private int $id;
     private int $indicatorId;
     private int $sourceId;
-    private float $value;
+    private int $municipalityId;
+    private string $value;
     private string $referenceDate;
-    private string $note;
+    private ?string $note;
 
     public function __construct(
         int $id,
         int $indicatorId,
         int $sourceId,
-        float $value,
+        int $municipalityId,
+        string $value,
         string $referenceDate,
-        string $note
+        ?string $note
     ) {
         $this->id = $id;
         $this->indicatorId = $indicatorId;
         $this->sourceId = $sourceId;
+        $this->municipalityId = $municipalityId;
         $this->value = $value;
         $this->referenceDate = $referenceDate;
         $this->note = $note;
@@ -36,7 +39,11 @@ class Result {
         return $this->sourceId;
     }
 
-    public function getValue(): float {
+    public function getMunicipalityId(): int {
+        return $this->municipalityId;
+    }
+
+    public function getValue(): string {
         return $this->value;
     }
 
@@ -44,7 +51,7 @@ class Result {
         return $this->referenceDate;
     }
 
-    public function getNote(): string {
+    public function getNote(): ?string {
         return $this->note;
     }
 }

@@ -6,6 +6,8 @@
     <title>Administração</title>
 </head>
 <body>
-    
+    <form action="" method="post">
+        <input type="text" name="name" id="name">
+    </form>
 </body>
 </html>
