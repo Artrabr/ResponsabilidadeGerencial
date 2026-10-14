@@ -1,0 +1,239 @@
+# Responsabilidade Gerencial
+## Documentação inicial — versão 0.1
+
+**Responsável pelo projeto:** Arthur Rabello  
+**Data:** 14 de outubro de 2026  
+**Município inicial:** Novo Hamburgo/RS  
+**Situação:** planejamento da primeira versão funcional (MVP).
+
+Este documento transforma a proposta do projeto em requisitos de desenvolvimento. Descreve o comportamento desejado; não representa uma auditoria do código ou do banco já criado. As estruturas técnicas abaixo são propostas e deverão ser conciliadas com os arquivos existentes antes da implementação.
+
+## 1. Objetivo
+
+Criar um site público que reúna informações sobre Novo Hamburgo e permita consultar dados municipais e dos bairros de maneira simples, visual e com identificação das fontes.
+
+O principal recurso será um mapa interativo dos bairros. A página também apresentará indicadores municipais e um aviso quando houver transmissão ao vivo da Câmara de Vereadores.
+
+A primeira versão deve comprovar esse fluxo completo: abrir o site, selecionar um bairro, consultar os dados disponíveis e identificar de onde vieram.
+
+## 2. Público e acesso
+
+O site será voltado a moradores, estudantes e pessoas interessadas em acompanhar a cidade. A consulta pública não exigirá cadastro ou login.
+
+A identidade visual deve deixar claro que se trata de um projeto independente, sem sugerir que é um portal oficial da Prefeitura ou da Câmara.
+
+## 3. Escopo da primeira versão
+
+|  ID  |                 Funcionalidade                   |                 Prioridade             |
+|  --- |                      ---                         |                    ---                 |
+| RF01 | Página inicial com identidade visual e navegação |                 Essencial              |
+| RF02 | Mapa interativo dos bairros de Novo Hamburgo     |                 Essencial              |
+| RF03 | Painel com informações do bairro selecionado     |                 Essencial              |
+| RF04 | Indicadores gerais do município                  |                 Essencial              |
+| RF05 | Fonte e período de referência dos dados          |                 Essencial              |
+| RF06 | Faixa de transmissão ao vivo da Câmara           |Incluída; depende da definição da fonte |
+| RF07 | Importação de dados para o banco                 |          Essencial para operação       |
+| RF08 | Página Sobre e fontes                            |                 Essencial              |
+
+### RF01 — Página inicial
+
+Apresentar nome e logo do projeto, breve explicação da proposta, indicadores em destaque, mapa e acesso às fontes.
+
+**Direção visual:** fundo escuro, títulos em Georgia, hierarquia editorial inspirada em jornais, linhas divisórias e cores pontuais. O vermelho terá destaque na faixa de transmissão. Textos e números precisam manter boa legibilidade.
+
+**Critério de conclusão:** a página permite localizar rapidamente o mapa e os indicadores, tanto no computador quanto no celular.
+
+### RF02 — Mapa interativo
+
+Exibir o território de Novo Hamburgo dividido em bairros. Ao passar o mouse, destacar o bairro e mostrar seu nome. Ao clicar ou tocar, selecionar o bairro e atualizar o painel de informações.
+
+A seleção deve permanecer visível até a escolha de outro bairro. Também haverá uma lista ou seletor de bairros, permitindo acesso por teclado e uma alternativa ao mapa.
+
+**Proposta técnica:** SVG com uma região identificável por bairro. Se o dado geográfico disponível favorecer outra solução, utilizar GeoJSON. A escolha depende da obtenção e validação dos limites.
+
+Uma imagem PNG isolada não fornece regiões interativas. Será necessário obter ou preparar as formas de cada bairro e associá-las aos registros do banco.
+
+**Critério de conclusão:** cada região selecionável corresponde ao bairro correto; hover, clique, toque e seleção alternativa funcionam.
+
+### RF03 — Informações do bairro
+
+Mostrar nome do bairro e os dados básicos disponíveis e verificados. População e área territorial são candidatos, sujeitos à existência de fonte adequada ao recorte de bairro.
+
+Cada informação deve apresentar valor, unidade, período de referência e fonte. Quando não houver dado, mostrar “Não disponível”.
+
+Dados do município não devem ser apresentados como se fossem dados do bairro. Ausência de informação não equivale a zero.
+
+**Critério de conclusão:** trocar o bairro atualiza os dados e a identificação, sem manter valores da seleção anterior.
+
+### RF04 — Indicadores municipais
+
+Apresentar um conjunto inicial pequeno, proposto entre três e cinco indicadores, escolhido após verificar as fontes. Exemplos candidatos: população, área territorial e indicadores de educação ou saúde.
+
+Cada cartão deve conter título, valor, unidade, período de referência e acesso à fonte. Variações e comparações só aparecerão quando existirem dados comparáveis e regra de cálculo definida.
+
+**Critério de conclusão:** todos os valores publicados podem ser rastreados até uma fonte e um período.
+
+### RF05 — Transparência dos dados
+
+Distinguir:
+- **Período de referência:** quando o fenômeno foi medido, por exemplo, um ano censitário.
+- **Última importação:** quando o sistema buscou ou cadastrou aquela informação.
+
+Atualizar a importação não torna o dado mais recente em sua origem. O site não deve anunciar dados “em tempo real” quando a fonte não oferece essa atualização.
+
+**Critério de conclusão:** o visitante consegue entender a idade e a origem de cada informação.
+
+### RF06 — Câmara ao vivo
+
+Mostrar uma faixa vermelha com “Câmara de Vereadores ao vivo” e um link para a transmissão oficial quando o estado ao vivo estiver confirmado.
+
+Prever três estados: **ao vivo**, **fora do ar** e **não foi possível verificar**. Horário previsto de sessão, sozinho, não comprova que a transmissão começou.
+
+A detecção automática depende de verificar uma integração disponível. Até isso ser resolvido, admitir uma configuração manual temporária com link e validade, sem apresentar essa solução como automação concluída. Se a verificação estiver indisponível ou vencida, oferecer apenas um link neutro para o canal oficial.
+
+**Critério de conclusão:** a faixa aparece somente com confirmação válida, abre o destino correto e deixa de anunciar uma transmissão encerrada.
+
+### RF07 — Importação e atualização
+
+O PHP deverá buscar dados nas fontes aprovadas, validar o retorno e salvar os resultados no MySQL. A página consultará o banco local.
+
+A primeira versão poderá executar a importação por comando no servidor. Depois, a mesma rotina poderá ser agendada conforme a frequência de publicação de cada fonte.
+
+Requisitos da rotina:
+- Evitar duplicação ao importar novamente o mesmo dado.
+- Validar município, bairro, indicador, unidade e período.
+- Registrar sucesso, falha e horário da tentativa.
+- Preservar o último dado válido quando uma fonte falhar.
+- Impedir que uma resposta inválida substitua informações corretas.
+
+**Critério de conclusão:** repetir uma importação não duplica resultados e uma falha externa não deixa a página sem os dados já armazenados.
+
+### RF08 — Sobre e fontes
+
+Explicar o objetivo, o caráter independente do projeto, as limitações da primeira versão e a origem dos dados. Incluir links das fontes efetivamente utilizadas.
+
+**Critério de conclusão:** a página está acessível pela navegação e descreve o funcionamento real da versão publicada.
+
+## 4. Fluxo principal do visitante
+
+1. Acessa a página inicial.
+2. Visualiza os indicadores municipais.
+3. Explora o mapa ou escolhe um bairro na lista.
+4. Consulta os dados básicos do bairro.
+5. Abre a fonte para conferir o conteúdo.
+6. Caso exista transmissão confirmada, acessa a Câmara pelo aviso.
+
+## 5. Tecnologias e responsabilidades
+
+| Tecnologia | Responsabilidade |
+| --- | --- |
+| HTML | Estrutura e conteúdo das páginas |
+| CSS | Tema escuro, tipografia, organização e adaptação às telas |
+| JavaScript | Interação do mapa e atualização do painel |
+| PHP | Regras, consulta ao banco e importação de fontes externas |
+| MySQL/MariaDB | Armazenamento dos bairros, indicadores, resultados e fontes |
+| PDO | Comunicação do PHP com o banco |
+| SVG ou GeoJSON | Representação das divisões dos bairros |
+| Git | Histórico do código e da documentação |
+
+**Fluxo dos dados:** fonte externa → importador PHP → validação → banco → página.
+
+O visitante não deve depender de uma chamada externa a cada acesso. Armazenar os dados permite servir a página mesmo quando a fonte estiver temporariamente indisponível.
+
+## 6. API e interface: diferença no projeto
+
+Uma **API** é um meio disponibilizado por outro sistema para consultar dados de forma programática. A existência de informação em um site não garante que exista uma API pública.
+
+Uma **interface em PHP** é um contrato que define métodos que diferentes classes devem implementar. Por exemplo, importadores de fontes distintas podem seguir um contrato comum de busca de dados.
+
+Não é necessário começar com várias interfaces. Primeiro será implementada uma integração pequena e funcional. Quando houver diferentes fontes e comportamentos repetidos, poderá ser criada uma interface para padronizar os importadores.
+
+Caso uma fonte não ofereça API, avaliar arquivo estruturado, como CSV, ou carga manual documentada. A automação dependerá das condições reais de acesso e publicação de cada fonte.
+
+## 7. Organização conceitual dos dados
+
+Esta é uma proposta de responsabilidades, não o esquema confirmado do banco existente.
+
+| Entidade | Finalidade | Informações principais |
+| --- | --- | --- |
+| Município | Identificar a cidade | ID, nome, UF e código oficial quando aplicável |
+| Bairro | Identificar cada divisão | ID, município, nome e identificador no mapa |
+| Área temática | Agrupar indicadores | ID, nome e descrição, como saúde ou educação |
+| Indicador | Definir o que é medido | ID, área temática, nome, descrição e unidade |
+| Resultado | Guardar uma observação | Indicador, município, bairro opcional, valor, período e fonte |
+| Fonte | Identificar a origem | Nome, instituição, URL e método de obtenção |
+| Registro de importação | Acompanhar atualizações | Fonte, data, estado e descrição de erro |
+| Estado de transmissão | Controlar o aviso | Estado, URL, última verificação e validade |
+
+Um resultado pertence a um município e pode se referir a um bairro específico. Sem bairro, representa o recorte municipal. A ligação entre mapa e banco deve usar um identificador estável, evitando depender de nomes digitados de maneiras diferentes.
+
+Definir uma regra de unicidade para impedir repetição da mesma observação. O tratamento do bairro opcional deve ser considerado nessa regra.
+
+O estado da transmissão poderá ser armazenado em uma configuração simples na etapa inicial. Não há necessidade de cadastro de usuários públicos no MVP.
+
+## 8. Requisitos de qualidade
+
+- **Responsividade:** mapa e painel utilizáveis no celular e no computador.
+- **Acessibilidade:** navegação por teclado, foco visível, contraste legível e informação que não dependa apenas de cor.
+- **Segurança:** consultas parametrizadas com PDO; escape de textos exibidos no HTML; validação de parâmetros.
+- **Credenciais:** senha do banco e chaves externas ficam no servidor, fora do JavaScript público e do repositório.
+- **Confiabilidade:** valores ausentes, falhas de consulta e períodos antigos devem ser apresentados corretamente.
+- **Desempenho:** servir dados armazenados e evitar consultas externas por visitante.
+- **Manutenção:** separar apresentação, acesso ao banco e importação; registrar instruções de execução.
+- **Operação:** rotinas de importação não devem ficar expostas como ações públicas sem proteção.
+
+## 9. Fora da primeira versão
+
+- Login e perfis de visitantes.
+- Comentários, denúncias ou participação pública.
+- Rankings automáticos de bairros ou políticos.
+- Avaliação de cumprimento de metas sem metodologia e dados definidos.
+- Notícias geradas automaticamente.
+- Histórico avançado e grandes painéis de gráficos.
+- Comparação entre municípios.
+- Painel administrativo completo.
+- Integração simultânea com muitas fontes.
+
+Esses itens poderão ser avaliados após a validação da navegação e da qualidade dos dados.
+
+## 10. Checklist de desenvolvimento
+
+- [ ] Confirmar nome público e identidade do projeto.
+- [ ] Revisar o código e o banco existentes em relação a este escopo.
+- [ ] Selecionar os primeiros indicadores e confirmar fonte, período e recorte.
+- [ ] Obter e validar os limites dos bairros.
+- [ ] Preparar o mapa e os identificadores.
+- [ ] Ajustar o banco e a conexão PDO.
+- [ ] Inserir uma carga inicial pequena de dados verificados.
+- [ ] Criar a página inicial com tema escuro e Georgia.
+- [ ] Implementar seleção por mouse, toque e teclado.
+- [ ] Conectar o painel do bairro aos dados do banco.
+- [ ] Exibir indicadores, fontes e períodos.
+- [ ] Implementar o aviso da Câmara e seus estados.
+- [ ] Implementar e verificar a primeira rotina de importação.
+- [ ] Criar a página Sobre e fontes.
+- [ ] Verificar celular, dados ausentes, erros e links.
+- [ ] Documentar instalação, configuração e execução da importação.
+- [ ] Publicar a primeira versão em ambiente com PHP e banco.
+
+**Ordem sugerida:** fontes e mapa → banco → página → interação → importação → transmissão → revisão e publicação.
+
+## 11. Quando considerar o MVP pronto
+
+A versão estará pronta quando um visitante conseguir consultar a cidade, selecionar os bairros e entender os dados e suas fontes; quando a atualização puder ser repetida de forma controlada; e quando o aviso da Câmara não informar um estado ao vivo sem confirmação.
+
+A validação deverá incluir um bairro com dados, um sem dados, navegação no celular, acesso por teclado, reimportação do mesmo conjunto, falha da fonte externa e os três estados da transmissão.
+
+## 12. Decisões pendentes
+
+| Decisão | O que precisa ser resolvido |
+| --- | --- |
+| Nome público | Manter Responsabilidade Gerencial ou escolher outro nome |
+| Limites dos bairros | Confirmar origem, data, uso permitido e correspondência dos nomes |
+| Indicadores iniciais | Selecionar poucos dados com fonte adequada e recorte disponível |
+| Câmara ao vivo | Verificar fonte e método de confirmação da transmissão |
+| Frequência de atualização | Definir por fonte; não assumir atualização diária para tudo |
+| Hospedagem | Confirmar suporte a PHP, MySQL e agendamento de tarefas |
+
+A documentação poderá evoluir junto com o projeto. Mudanças de escopo e decisões sobre fontes devem ser registradas para manter coerência entre a proposta, o código e o comportamento publicado.
+
